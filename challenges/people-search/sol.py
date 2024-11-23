@@ -184,7 +184,7 @@ def apply_clauses(combined_df: pd.DataFrame, clauses: list[Clause]) -> pd.DataFr
             else:
                 raise Exception(f"Can't parse clause: {clause.operator}")
         elif clause.clause_type == "ORDER":
-            result_df.sort_values(
+            result_df = result_df.sort_values(
                 by=[clause.column], ascending=(clause.operator == "asc")
             )
         else:
