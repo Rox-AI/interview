@@ -86,11 +86,11 @@ Output:"""
 class Clause:
     clause_type: str
     column: str = ""
-    operator: str = ""  # only for filter
+    operator: str = ""
     value: str = ""
 
 
-def get_combined_df(base_dir="data") -> pd.DataFrame:
+def get_combined_df(base_dir: str = "data") -> pd.DataFrame:
     companies = pd.read_csv(f"{base_dir}/companies.csv")
     people = pd.read_csv(f"{base_dir}/people.csv")
     combined = pd.merge(
@@ -134,7 +134,7 @@ def _parse_content(raw_llm_output: str) -> list[Clause]:
                 )
             )
         else:
-            print("Can't parse split: ", line)
+            raise Exception(f"Can't parse split: {line}")
 
     return clauses
 
@@ -152,7 +152,7 @@ def convert_query_to_clauses(
                 "content": LLM_PROMPT.format(
                     JOB_TITLES="\n* ".join(combined_df.job_title.unique()),
                     SENIORITIES="\n* ".join(combined_df.seniority.unique()),
-                    INDUSTRIES="\n* ".join(combined_df.industry.unique()[:-1]),
+                    INDUSTRIES="\n* ".join(combined_df.industry.unique()),
                     INPUT_QUERY=input_query,
                 ),
             }
@@ -182,7 +182,7 @@ def apply_clauses(combined_df: pd.DataFrame, clauses: list[Clause]) -> pd.DataFr
             elif clause.operator == "<=":
                 result_df = result_df[getattr(result_df, clause.column) <= clause.value]
             else:
-                print("Can't parse!!!")
+                raise Exception(f"Can't parse clause: {clause.operator}")
         elif clause.clause_type == "ORDER":
             result_df.sort_values(
                 by=[clause.column], ascending=(clause.operator == "asc")
@@ -208,4 +208,4 @@ if __name__ == "__main__":
     filtered_df = get_filtered_df(combined_df, input_query)
     filtered_df.to_csv("output_df.csv", index=False)
 
-    print("OUTPUT to {input_query}:\n", filtered_df.to_markdown())
+    print(f'OUTPUT to "{input_query}":\n', filtered_df.to_markdown())
