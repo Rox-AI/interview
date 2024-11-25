@@ -13,8 +13,13 @@ Your method should be reasonably fast.
 
 For simplicity, here are some constraints that you can assume:
 * The search query will only reference fields that are present in the data. The fields "job title", "seniority", and "industry" will require fuzzy matching.
-* The number of distinct values is small for the fields "job title", "seniority", "city", "state", "country", and "industry".
-* Queries will only ever require you to filter, sort, or limit the number of results. In particular, you will not have to do any "GROUP BY" aggregations or "OR"-style filters.
+* The number of distinct values is small for the fields "job title", "seniority" and "industry".
+* You should only have to perform filters, sorts, and limits. Additionally, you will only have to do "=", ">" and "<" filters. You will not have to do any "GROUP BY" aggregations or "OR"-style filters.
+* You *should not* evaluate any LLM-generated code. Instead, the LLM should output operations in a structured format that you should parse into your own query.
+
+You will be provided with template code that loads the data and provides a skeleton function that you will have to implement.
+
+You may use either pandas-style or SQL-style queries, whichever you are more comfortable with.
 
 ## Example Queries
 * "Give me all the people at the level of Vice President that work at Googol"
